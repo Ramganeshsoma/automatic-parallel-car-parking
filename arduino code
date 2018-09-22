@@ -1,0 +1,284 @@
+// IoT project on Reverse car parking
+int el=5;
+int lr=6;
+int lf=7;
+int rf=8;
+int rr=9;
+int er=10;
+int irb=11;
+int irf=12;
+int irs=13;
+int b=13;
+int trigPin = 4;
+int echoPin = 14;
+int trigPin1 = 3;
+int echoPin1 = 15;
+int trigPin2 = 2;
+int dl,dh;
+int echoPin2 = 16;
+int notifi = 2;
+
+long duration,duration1,duration2;
+int distance,distance1,distance2,d,d1,d2;
+
+
+void setup()
+{ pinMode(b,OUTPUT);
+  Serial.begin(9600);
+  pinMode(el,OUTPUT);
+  pinMode(lr,OUTPUT);
+  pinMode(lf,OUTPUT);
+  pinMode(er,OUTPUT);
+  pinMode(rr,OUTPUT);
+  pinMode(rf,OUTPUT);
+  pinMode(irb,INPUT);
+  pinMode(irs,INPUT);
+  pinMode(trigPin,OUTPUT);
+  pinMode(echoPin,INPUT);
+  pinMode(trigPin1,OUTPUT);
+  pinMode(echoPin1,INPUT);
+  pinMode(trigPin2,OUTPUT);
+  pinMode(echoPin2,INPUT);  
+  pinMode(notifi,OUTPUT);
+}
+void loop()
+{
+start();
+}
+
+
+
+
+void start()
+{
+int s=digitalRead(irs);
+
+                 // 1=when there is an obstacle    
+          if(s==1)
+{               // when there is obstacle
+                  Serial.println("there is no slot");
+                  f(155);
+                  delay(1000);   
+}
+else
+{
+                     
+                      Serial.println("vacancy found");
+                      f(255);
+                      delay(1000);   
+                      rest();
+                      delay(500);
+                      d=uv();
+if(d>20&&d<1000)
+{
+
+    Serial.println("slot found");
+    rrt(195);
+    delay(1000);
+   rest();
+    rev();
+}
+
+
+}
+}
+
+
+
+/*void park()
+{
+  int i=0;
+  i++;
+d1=uv1();
+d2=uv2();
+dl=d-(5-i);
+dl=d+(5-i);
+if(d>dh&&d<dl)
+{
+Serial.println("reverse function is called");
+  rev();
+  
+}
+else
+{
+  rrt(100);
+  delay(500);
+  park();
+}
+
+}*/
+
+
+
+int f(int x)
+{ 
+  
+  int a=digitalRead(irf);
+
+  if(a==1)
+  {
+  digitalWrite(lf,HIGH);
+  digitalWrite(lr,LOW);
+  digitalWrite(el,x);
+  digitalWrite(rf,HIGH);
+  digitalWrite(rr,LOW);
+  digitalWrite(er,x);
+  Serial.println("moving forward");
+  }
+  else
+
+  { 
+    pause();
+    Serial.println("paused: obstacle present in front");
+  }
+}
+
+
+
+void rev()
+{ 
+  int k=digitalRead(irb);
+  
+           if(k==1)
+           {
+  digitalWrite(lf,LOW);
+  digitalWrite(lr,HIGH);
+  digitalWrite(el,85);
+  digitalWrite(rf,LOW);
+  digitalWrite(rr,HIGH);
+  digitalWrite(er,85);
+delay(500);
+rev();
+}
+else{
+digitalWrite(notifi,HIGH);
+delay(200);
+digitalWrite(notifi,LOW);
+stoping();
+}
+}
+
+
+
+
+void rest()
+{
+  digitalWrite(lf,LOW);
+  digitalWrite(lr,LOW);
+  digitalWrite(el,255);
+  digitalWrite(rf,LOW);
+  digitalWrite(rr,LOW);
+  digitalWrite(er,255);
+  
+}
+
+
+
+
+int rrt(int x)
+{ digitalWrite(lf,LOW);
+  digitalWrite(lr,LOW);
+  digitalWrite(el,255);
+  digitalWrite(rf,LOW);
+  digitalWrite(rr,HIGH);
+  digitalWrite(er,x);
+   
+}
+
+
+
+void stoping()
+{
+        //rest
+                      digitalWrite(rr,LOW);
+                      digitalWrite(rf,LOW);
+                      analogWrite(er, 255);
+                      
+                      digitalWrite(lr,LOW);
+                      digitalWrite(lf,LOW);
+                      analogWrite(el, 255);
+
+                      
+                      Serial.println("stoped permanently");  
+                     stoping();
+}
+
+
+void pause()
+{
+        //pause is used for forward ir
+                      digitalWrite(rr,LOW);
+                      digitalWrite(rf,LOW);
+                      analogWrite(er, 255);
+                      
+                      digitalWrite(lr,LOW);
+                      digitalWrite(lf,LOW);
+                      analogWrite(el, 255); 
+                     
+}
+
+
+
+
+
+
+
+
+
+int uv()
+{
+  
+  digitalWrite(trigPin, HIGH);
+  delay(200);
+  digitalWrite(trigPin, LOW);
+
+
+  duration = pulseIn(echoPin, HIGH);
+
+
+  distance= duration*0.034/2;
+
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+return(distance);
+}
+
+/*
+int uv1()
+{
+  
+  digitalWrite(trigPin1, HIGH);
+  delay(2000);
+  digitalWrite(trigPin1, LOW);
+
+
+  duration1 = pulseIn(echoPin1, HIGH);
+
+
+  distance1= duration1*0.034/2;
+
+  Serial.print("Distance1: ");
+  Serial.println(distance1);
+
+return(distance1);
+}
+
+int uv2(){
+  
+  digitalWrite(trigPin2, HIGH);
+  delay(2000);
+  digitalWrite(trigPin2, LOW);
+
+
+  duration2 = pulseIn(echoPin2, HIGH);
+
+
+  distance2= duration2*0.034/2;
+
+  Serial.print("Distance2: ");
+  Serial.println(distance2);
+
+return(distance2);
+}
+*/
