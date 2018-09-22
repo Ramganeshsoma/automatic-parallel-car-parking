@@ -1,0 +1,45 @@
+#define BLYNK_PRINT Serial
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266_SSL.h>
+
+BlynkTimer timer;
+
+char auth[] = "78c986aa819c4f718475496587f9952e";
+
+
+char ssid[] = "vasavikiranalu";
+char pass[] = "largeocean902";
+
+#define park D1
+int p;
+
+void parkchecker()
+{
+  p= digitalRead(park);
+  if(p==1)
+  {
+     Blynk.notify("Car parked");
+     
+  }
+} 
+
+
+
+void setup()
+{
+  pinMode(park,INPUT);
+  // Debug console
+  Serial.begin(9600);
+  
+  Blynk.begin(auth, ssid, pass);
+  
+}
+
+void loop()
+{
+  Blynk.run();
+  parkchecker();
+  delay(15000);
+}
